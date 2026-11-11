@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NonTweaks | Official Performance, GPU & Custom OS Suite</title>
+    
+    <script>
+        window.tailwind = window.tailwind || {};
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0a0b0e',
+                            card: '#12141c',
+                            border: '#1f2433',
+                            purple: '#8b5cf6',
+                            blue: '#3b82f6',
+                            emerald: '#10b981',
+                            gold: '#f59e0b',
+                            red: '#ef4444'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SDK OFICIAL DE PAYPAL -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AVe7eUhOfvOvjcEeS3nMqbV--B_K8uWlEfOu--XFAzVwGt0Wz2etva8C4Ii_B4S5UyJjABleHkne_dVp&currency=USD"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { background-color: #0a0b0e; color: #f1f5f9; margin: 0; padding: 0; overflow-x: hidden; }
+        .bg-brand-dark { background-color: #0a0b0e !important; }
+        .bg-brand-card { background-color: #12141c !important; }
+        .border-brand-border { border-color: #1f2433 !important; }
+        
+        .bg-glow-purple {
+            background: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.25) 0%, transparent 65%);
+        }
+        .card-blur {
+            background: rgba(18, 20, 28, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .pulse-dot { box-shadow: 0 0 12px #10b981; }
+
+        @keyframes menuSlideIn {
+            0% { opacity: 0; transform: translateY(10px) scale(0.99); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .tab-slide-anim { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        button, a, input, select, textarea, label {
+            pointer-events: auto !important;
+            touch-action: manipulation;
+            position: relative;
+            z-index: 50;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-brand-dark text-slate-100 min-h-screen flex flex-col antialiased bg-glow-purple selection:bg-purple-500 selection:text-white">
+
+    <!-- TOAST NOTIFICACIÓN -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-[999999] px-5 py-3.5 rounded-2xl font-bold text-xs shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-12 opacity-0 pointer-events-none bg-purple-600 text-white border border-purple-400/30">
+        <span id="toastIcon" class="text-sm">✨</span>
+        <span id="toastMessage">Notification</span>
+    </div>
+
+    <!-- NAVBAR RESPONSIVA -->
+    <header class="sticky top-0 z-[100] border-b border-brand-border card-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" onclick="switchWebTab('planes'); return false;" class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center font-black text-white text-lg sm:text-xl shadow-lg shadow-purple-600/30 group-hover:scale-105 transition-transform">
+                    NT
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-base sm:text-lg tracking-tight text-white group-hover:text-purple-400 transition-colors">NonTweaks</span>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-wider uppercase flex items-center gap-1">
+                        Official Portal <span id="activePlanBadgeUI" class="text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 font-bold">(Free)</span>
+                    </span>
+                </div>
+            </a>
+
+            <!-- NAV DESKTOP -->
+            <nav class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-semibold text-slate-300">
+                <a href="#inicio" onclick="switchWebTab('planes'); return false;" data-i18n="nav_home" class="hover:text-purple-400 transition-colors cursor-pointer">Home</a>
+                <a href="#nuevos-usuarios" onclick="switchWebTab('nuevos-usuarios'); return false;" data-i18n="nav_users" class="hover:text-purple-400 transition-colors cursor-pointer">Live Users</a>
+                <a href="#planes" onclick="switchWebTab('planes'); return false;" data-i18n="nav_plans" class="hover:text-purple-400 transition-colors cursor-pointer">Plans & Tweaks</a>
+                <a href="#feedback" onclick="switchWebTab('feedback'); return false;" data-i18n="nav_feedback" class="hover:text-purple-400 transition-colors cursor-pointer">Feedbacks & Chat</a>
+                
+                <!-- SELECTOR DE IDIOMA -->
+                <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-xl">
+                    <span class="text-[10px] font-bold text-slate-400">Lang:</span>
+                    <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-transparent text-xs text-purple-400 font-bold outline-none cursor-pointer">
+                        <option value="en" selected>English</option>
+                        <option value="es">Español</option>
+                    </select>
+                </div>
+            </nav>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="md:hidden flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-1 rounded-lg">
+                    <select id="langSelectMobile" onchange="changeLanguage(this.value)" class="bg-transparent text-[11px] text-purple-400 font-bold outline-none cursor-pointer">
+                        <option value="en" selected>EN</option>
+                        <option value="es">ES</option>
+                    </select>
+                </div>
+                <button id="btnWebUserPortal" onclick="openAuthModal()" data-i18n="btn_signin" class="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold bg-brand-border hover:bg-slate-800 border border-slate-700/60 text-slate-200 transition-all cursor-pointer shadow-md">
+                    Sign In / Register
+                </button>
+                <button id="btnWebOwnerConsole" onclick="switchWebTab('owner')" class="hidden px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 transition-all cursor-pointer">
+                    👑 Owner Admin
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white cursor-pointer border border-slate-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- MENÚ MÓVIL DESPLEGABLE -->
+        <div id="mobileMenuDropdown" class="hidden md:hidden bg-brand-card border-b border-brand-border px-6 py-5 space-y-3 shadow-2xl">
+            <a href="#inicio" onclick="switchWebTab('planes'); toggleMobileMenu();" data-i18n="nav_home" class="block text-sm font-semibold text-slate-300 hover:text-purple-400 py-1">Home</a>
+            <a href="#nuevos-usuarios" onclick="switchWebTab('nuevos-usuarios'); toggleMobileMenu();" data-i18n="nav_users" class="block text-sm font-semibold text-slate-300 hover:text-purple-400 py-1">Live Users</a>
+            <a href="#planes" onclick="switchWebTab('planes'); toggleMobileMenu();" data-i18n="nav_plans" class="block text-sm font-semibold text-slate-300 hover:text-purple-400 py-1">Plans & Tweaks</a>
+            <a href="#feedback" onclick="switchWebTab('feedback'); toggleMobileMenu();" data-i18n="nav_feedback" class="block text-sm font-semibold text-slate-300 hover:text-purple-400 py-1">Feedbacks & Chat</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow relative z-10">
+        <section id="inicio" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 flex flex-col items-center text-center">
+            
+            <!-- BANNER DE BIENVENIDA DINÁMICO -->
+            <div id="welcomeBanner" class="w-full max-w-3xl mb-6 p-5 rounded-2xl bg-gradient-to-r from-purple-900/50 via-indigo-900/50 to-purple-900/50 border border-purple-500/50 shadow-2xl relative overflow-hidden hidden">
+                <div class="absolute -right-6 -bottom-6 text-6xl opacity-10">🚀</div>
+                <h2 id="welcomeBannerTitle" class="text-lg sm:text-xl font-black text-white">Welcome back! 🎉</h2>
+                <p class="text-xs text-slate-300 mt-1" data-i18n="status_desc">Your account is connected. Explore our scaled FPS & delay tweaks, GPU debloat and Custom OS profiles.</p>
+            </div>
+
+            <!-- CONTADOR DE OFERTA FLASH 24 HORAS -->
+            <div class="w-full max-w-2xl mb-8 p-5 rounded-2xl bg-gradient-to-r from-amber-950/50 via-purple-950/50 to-amber-950/50 border border-amber-500/40 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="space-y-1 text-center sm:text-left">
+                    <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-black uppercase tracking-wider">⚡ FLASH DISCOUNT COUPON</span>
+                    <h3 class="text-base sm:text-lg font-black text-white">Use code <span class="text-amber-400 font-mono bg-slate-900 px-2 py-0.5 rounded border border-amber-500/30">NON24PRO</span></h3>
+                    <p class="text-[11px] text-slate-300">Generates instant VIP discount on all tiers for the next 24 hours!</p>
+                </div>
+                <div class="bg-slate-900/90 border border-slate-800 px-4 py-3 rounded-xl text-center shadow-inner">
+                    <div class="text-[10px] text-slate-400 uppercase font-bold">Expires in:</div>
+                    <div id="countdownTimer" class="text-lg font-black text-amber-400 font-mono tracking-wider mt-0.5">23:59:59</div>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[11px] sm:text-xs font-bold mb-6 shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+                <span data-i18n="badge_title">NonTweaks Suite v18.4 - Scaled FPS Tweaks, Custom OS & Professional Secure Checkout</span>
+            </div>
+
+            <h1 data-i18n="hero_title" class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-4xl leading-tight">
+                Scaled FPS Tweaks, Custom OS & Pro Esports Support
+            </h1>
+
+            <p data-i18n="hero_desc" class="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed px-2">
+                Over 15+ escalated FPS & delay tweaks per tier, NVIDIA/AMD GPU debloat, Custom OS profiles and competitive game tuning.
+            </p>
+        </section>
+
+        <!-- SECCIÓN DE PESTAÑAS -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-20">
+            <div class="flex overflow-x-auto gap-2.5 justify-start sm:justify-center border-b border-brand-border pb-4 mb-8 no-scrollbar">
+                <button id="webTabBtn-planes" onclick="switchWebTab('planes')" data-i18n="tab_plans" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs font-extrabold bg-purple-600 text-white shadow-lg shadow-purple-500/25 whitespace-nowrap cursor-pointer transition-all shrink-0">
+                    💎 Scaled Plans & Tweaks
+                </button>
+                <button id="webTabBtn-nuevos-usuarios" onclick="switchWebTab('nuevos-usuarios')" data-i18n="tab_users" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs font-extrabold bg-slate-800/60 text-slate-300 hover:text-white relative whitespace-nowrap cursor-pointer transition-all shrink-0">
+                    👥 Live Users <span class="ml-1.5 px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 text-[10px] animate-pulse">LIVE</span>
+                </button>
+                <button id="webTabBtn-feedback" onclick="switchWebTab('feedback')" data-i18n="tab_feedback" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs font-extrabold bg-slate-800/60 text-slate-300 hover:text-white whitespace-nowrap cursor-pointer transition-all shrink-0">
+                    💬 Feedbacks & Chat
+                </button>
+                <button id="webTabBtn-inbox" onclick="switchWebTab('inbox')" data-i18n="tab_inbox" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs font-extrabold bg-slate-800/60 text-slate-300 hover:text-white relative whitespace-nowrap cursor-pointer transition-all shrink-0">
+                    📥 Inbox <span id="webMsgCountBadge" class="ml-1.5 px-2 py-0.5 rounded-full bg-red-600 text-white text-[10px] hidden shadow-md">0</span>
+                </button>
+                <button id="webTabBtn-activar" onclick="switchWebTab('activar')" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs font-extrabold bg-slate-800/60 text-slate-300 hover:text-white relative whitespace-nowrap cursor-pointer transition-all shrink-0">
+                    ⚡ Activar Key
+                </button>
+                <button id="webTabBtn-licencia" onclick="switchWebTab('licencia')" data-i18n="tab_hwid" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs font-extrabold bg-slate-800/60 text-slate-300 hover:text-white whitespace-nowrap cursor-pointer transition-all shrink-0">
+                    🔑 HWID License (1 PC)
+                </button>
+                <button id="webTabBtn-owner" onclick="switchWebTab('owner')" class="px-4 sm:px-5 py-2.5 rounded-xl text-xs font-extrabold bg-amber-500/10 border border-amber-500/30 text-amber-400 hidden whitespace-nowrap cursor-pointer transition-all shrink-0">
+                    👑 Owner Admin
+                </button>
+            </div>
+
+            <!-- VISTA 1: PLANES ESCALADOS -->
+            <div id="webSec-planes" class="space-y-8 tab-slide-anim">
+                <div class="bg-gradient-to-r from-slate-900 via-brand-card to-slate-900 border border-brand-border rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                    <div class="space-y-1 text-center sm:text-left">
+                        <span class="text-[11px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-widest" data-i18n="status_label">Current Account Status</span>
+                        <h3 id="currentDashboardStatusTitle" class="text-xl sm:text-2xl font-black text-white">Status: Free Guest (No Active Plan)</h3>
+                        <p class="text-xs text-slate-400" data-i18n="status_desc">Sign in and activate a plan to unlock escalated FPS & delay tweaks, NVIDIA/AMD debloat and Custom OS.</p>
+                    </div>
+                    <div id="currentDashboardBadge" class="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-black border border-slate-700 whitespace-nowrap" data-i18n="free_version">
+                        Free Version
+                    </div>
+                </div>
+
+                <div class="text-center max-w-2xl mx-auto pt-4">
+                    <h2 class="text-2xl sm:text-3xl font-black text-white" data-i18n="plans_heading">Scaled Performance Plans (+15 Tweaks per Tier)</h2>
+                    <p class="text-xs text-slate-400 mt-2">Paga seguro con Tarjetas, Apple Pay, Cash App Pay o PayPal con pasarelas profesionales.</p>
+                </div>
+
+                <!-- TARJETAS DE PLANES -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- ESSENTIAL -->
+                    <div id="planCard-Essential" class="bg-brand-card border border-brand-border rounded-2xl p-6 flex flex-col justify-between hover:border-blue-500/60 transition-all shadow-lg relative">
+                        <div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Base Tier</span>
+                                <span class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">15+ Tweaks</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-white mt-2">Essential Plan</h3>
+                            <div class="text-3xl font-black text-white mt-2">$7.99 <span class="text-xs font-semibold text-slate-500 line-through">$14.99</span></div>
+                            
+                            <div class="mt-6 space-y-2.5 text-xs text-slate-300">
+                                <div class="flex items-center gap-2">✓ <span>15+ Essential FPS & Input Delay Tweaks</span></div>
+                                <div class="flex items-center gap-2">✓ <span>🟢 NVIDIA Driver Debloat & Telemetry Strip</span></div>
+                                <div class="flex items-center gap-2">✓ <span>🔴 AMD Driver Service & Bloat Cleaner</span></div>
+                                <div class="flex items-center gap-2">✓ <span>Windows 11 Standard Debloat & Telemetry Kill</span></div>
+                                <div class="flex items-center gap-2">✓ <span>VRAM Standby RAM Purge & Priority Boost</span></div>
+                            </div>
+                        </div>
+                        <div class="mt-8 space-y-3">
+                            <div id="activeLabel-Essential" class="hidden text-center py-2 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/40 text-xs font-black">✓ Active Plan</div>
+                            <button onclick="openCheckoutModal('Essential', 7.99, 'https://buy.stripe.com/fZu4gAd1PfPYaZBcUQ9R601')" class="w-full py-3.5 rounded-xl font-extrabold text-xs bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition-all cursor-pointer">
+                                Activate Essential ($7.99)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PRO -->
+                    <div id="planCard-Pro" class="bg-brand-card border-2 border-purple-500 rounded-2xl p-6 flex flex-col justify-between relative shadow-xl shadow-purple-500/15">
+                        <div class="absolute -top-3 right-6 bg-purple-600 text-white text-[10px] font-black px-3 py-0.5 rounded-full uppercase tracking-wider shadow-md">MOST POPULAR</div>
+                        <div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Competitive Tier</span>
+                                <span class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">25+ Tweaks</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-white mt-2">Pro Plan</h3>
+                            <div class="text-3xl font-black text-white mt-2">$14.99 <span class="text-xs font-semibold text-slate-500 line-through">$24.99</span></div>
+                            
+                            <div class="mt-6 space-y-2.5 text-xs text-slate-300">
+                                <div class="flex items-center gap-2">✓ <span>25+ Advanced Competitive FPS & Delay Tweaks</span></div>
+                                <div class="flex items-center gap-2">✓ <span>🟢 NVIDIA Deep Sub-Vendor GPU Debloat & IRQ Fix</span></div>
+                                <div class="flex items-center gap-2">✓ <span>🔴 AMD Shader Cache Cleaner & ULPS Disable</span></div>
+                                <div class="flex items-center gap-2">✓ <span>Deep Windows OS Debloat & Unnecessary Services Kill</span></div>
+                                <div class="flex items-center gap-2">✓ <span>Raw Input Mouse Polling & USB Interrupt Tuning</span></div>
+                            </div>
+                        </div>
+                        <div class="mt-8 space-y-3">
+                            <div id="activeLabel-Pro" class="hidden text-center py-2 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/40 text-xs font-black">✓ Active Plan</div>
+                            <button onclick="openCheckoutModal('Pro', 14.99, 'https://buy.stripe.com/aFa6oIaTH1Z8ffR5so9R600')" class="w-full py-3.5 rounded-xl font-extrabold text-xs bg-purple-600 hover:bg-purple-500 text-white shadow-lg transition-all cursor-pointer">
+                                Activate Pro ($14.99)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ULTRA -->
+                    <div id="planCard-Ultra" class="bg-gradient-to-b from-red-950/40 via-brand-card to-brand-card border-2 border-red-500/90 rounded-2xl p-6 flex flex-col justify-between relative shadow-2xl shadow-red-600/30">
+                        <div class="absolute -top-3 right-6 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black px-3 py-0.5 rounded-full uppercase tracking-wider shadow-md animate-pulse">🔥 ULTIMATE TIER</div>
+                        <div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Esports Elite</span>
+                                <span class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-red-500/15 text-red-400 border border-red-500/30">40+ Tweaks</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-white mt-2">Ultra Plan 🔥</h3>
+                            <div class="text-3xl font-black text-white mt-2">$21.99 <span class="text-xs font-semibold text-slate-500 line-through">$35.99</span></div>
+                            
+                            <div class="mt-6 space-y-2.5 text-xs text-slate-200">
+                                <div class="flex items-center gap-2">✓ <span>40+ Maximum Elite FPS & Zero Stutter Tweaks</span></div>
+                                <div class="flex items-center gap-2">✓ <span>🟢 NVIDIA Extreme VBIOS & Hardware Scheduling Lock</span></div>
+                                <div class="flex items-center gap-2">✓ <span>🔴 AMD SmartAccess Memory & Direct Bus Latency Lock</span></div>
+                                <div class="flex items-center gap-2">✓ <span>Extreme Custom OS ISO Profile & Zero Background Apps</span></div>
+                                <div class="flex items-center gap-2">✓ <span>Force Kernel Timer 0.5ms (Absolute Minimum Latency)</span></div>
+                            </div>
+                        </div>
+                        <div class="mt-8 space-y-3">
+                            <div id="activeLabel-Ultra" class="hidden text-center py-2 rounded-xl bg-red-500/20 text-red-400 border border-red-500/40 text-xs font-black">✓ Active Plan</div>
+                            <button onclick="openCheckoutModal('Ultra', 21.99, 'https://buy.stripe.com/bJe7sM6Dr5bk2t5aMI9R602')" class="w-full py-3.5 rounded-xl font-extrabold text-xs bg-red-600 hover:bg-red-500 text-white shadow-xl transition-all cursor-pointer">
+                                Activate Ultra ($21.99)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 2: NUEVOS USUARIOS -->
+            <div id="webSec-nuevos-usuarios" class="hidden space-y-6">
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-6 space-y-6">
+                    <h3 class="text-lg font-bold text-white">Live Users Registering & Logging In</h3>
+                    <div class="space-y-3" id="liveRegistrationsList"></div>
+                </div>
+            </div>
+
+            <!-- VISTA 3: FEEDBACK & CHAT -->
+            <div id="webSec-feedback" class="hidden space-y-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 space-y-4 lg:col-span-1">
+                        <h3 class="text-lg font-bold text-white">💬 Leave your Feedback</h3>
+                        <form id="feedbackForm" onsubmit="handleFeedbackSubmit(event)" class="space-y-4">
+                            <select id="feedbackRatingInput" class="w-full bg-slate-900 border border-brand-border rounded-xl px-4 py-2.5 text-xs text-amber-400 font-bold outline-none cursor-pointer">
+                                <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                                <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                            </select>
+                            <textarea id="feedbackCommentInput" rows="3" required placeholder="Write your experience..." class="w-full bg-slate-900 border border-brand-border rounded-xl p-3 text-xs text-white outline-none"></textarea>
+                            <button type="submit" class="w-full py-3 rounded-xl font-extrabold text-xs bg-purple-600 text-white cursor-pointer shadow-lg">Submit Feedback</button>
+                        </form>
+                    </div>
+                    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 flex flex-col justify-between lg:col-span-2 h-[450px]">
+                        <h3 class="text-lg font-bold text-white">Live Community Chat</h3>
+                        <div id="chatMessagesContainer" class="flex-grow overflow-y-auto space-y-3 py-4 pr-2 no-scrollbar"></div>
+                        <form id="chatForm" onsubmit="handleChatSubmit(event)" class="pt-3 border-t border-brand-border flex gap-2">
+                            <input id="chatInputMessage" type="text" required placeholder="Type a message..." class="flex-grow bg-slate-900 border border-brand-border rounded-xl px-4 py-2.5 text-xs text-white outline-none">
+                            <button type="submit" class="px-5 py-2.5 rounded-xl font-extrabold text-xs bg-purple-600 hover:bg-purple-500 text-white cursor-pointer">Send</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="webFeedbacksGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+            </div>
+
+            <!-- VISTA 4: INBOX -->
+            <div id="webSec-inbox" class="hidden space-y-6">
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-6 min-h-[300px]">
+                    <h3 class="text-lg font-bold text-white mb-2">📥 Private Message Inbox</h3>
+                    <div id="webInboxList" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <!-- VISTA 5: ACTIVAR KEY -->
+            <div id="webSec-activar" class="hidden space-y-6">
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-8 max-w-xl mx-auto space-y-6 shadow-2xl">
+                    <h3 class="text-xl font-black text-white">⚡ Instant Key Activation</h3>
+                    <div class="space-y-4">
+                        <input id="manualKeyInput" type="text" placeholder="NON-PRO-XXXXX" class="w-full bg-slate-900 border border-brand-border rounded-xl px-4 py-3 text-xs text-white font-mono uppercase tracking-wider outline-none">
+                        <button onclick="redeemManualKey()" class="w-full py-3.5 rounded-xl font-extrabold text-xs bg-purple-600 hover:bg-purple-500 text-white cursor-pointer shadow-lg">Activate License Now 🚀</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 6: LICENCIA HWID -->
+            <div id="webSec-licencia" class="hidden space-y-6">
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-2xl mx-auto space-y-6">
+                    <h3 class="text-lg font-bold text-white">🔑 HWID License Management (1 PC Lock)</h3>
+                    <div id="webLicenseStatusDisplay" class="text-xl font-black text-purple-400 mt-1">Free Guest Mode</div>
+                    <input id="webHwidInput" type="text" readonly value="HWID-LOCKED-PC-01" class="w-full bg-slate-900/80 border border-brand-border rounded-xl px-4 py-3 text-xs text-white font-mono outline-none">
+                </div>
+            </div>
+
+            <!-- VISTA 7: OWNER ADMIN AVANZADO -->
+            <div id="webSec-owner" class="hidden space-y-6">
+                <div class="bg-brand-card border border-amber-500/30 rounded-2xl p-6 space-y-6 shadow-2xl">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-brand-border pb-4">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-amber-400">👑 Advanced Owner Admin & Security Logs</h3>
+                            <p class="text-xs text-slate-400">Monitor active traffic logs, generate/revoke keys, manage user passwords and moderate community feedback.</p>
+                        </div>
+                        <button onclick="ownerClearLogs()" class="px-4 py-2 bg-red-600/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold cursor-pointer">🧹 Clear Logs</button>
+                    </div>
+
+                    <!-- GENERADOR DE KEYS -->
+                    <div class="p-4 rounded-xl bg-slate-900 border border-amber-500/30 space-y-3">
+                        <h4 class="text-sm font-bold text-amber-400">🔑 Generate Manual Key</h4>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <select id="ownerTargetPlanSelect" class="bg-brand-card border border-brand-border rounded-xl px-4 py-2.5 text-xs text-white font-bold outline-none cursor-pointer sm:w-1/3">
+                                <option value="Essential">Essential Plan ($7.99)</option>
+                                <option value="Pro" selected>Pro Plan ($14.99)</option>
+                                <option value="Ultra">Ultra Plan ($21.99)</option>
+                            </select>
+                            <button onclick="ownerGenerateSpecificKey()" class="flex-grow px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-extrabold shadow-lg cursor-pointer">
+                                ➕ Generate Selected Plan Key
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ESTADÍSTICAS -->
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400 font-bold">Total Users</div>
+                            <div id="ownerTotalUsers" class="text-2xl font-black text-white mt-1">0</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400 font-bold">Active Keys</div>
+                            <div id="ownerTotalKeys" class="text-2xl font-black text-purple-400 mt-1">0</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400 font-bold">Blocked Attempts</div>
+                            <div id="ownerBlockedBypasses" class="text-2xl font-black text-red-400 mt-1">0</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400 font-bold">Server Status</div>
+                            <div class="text-2xl font-black text-emerald-400 mt-1">Secure 🛡️</div>
+                        </div>
+                    </div>
+
+                    <!-- GESTIÓN DE USUARIOS Y LOGS -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                        <div class="space-y-3">
+                            <h4 class="text-sm font-bold text-white">👥 Registered Users & Password Management</h4>
+                            <div id="ownerUsersListContainer" class="space-y-2 max-h-60 overflow-y-auto pr-2"></div>
+                        </div>
+                        <div class="space-y-3">
+                            <h4 class="text-sm font-bold text-amber-400">🛡️ Live Traffic & Security Logs</h4>
+                            <div id="ownerSecurityLogsContainer" class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-mono text-[11px] text-slate-300 space-y-1.5 max-h-60 overflow-y-auto"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                        <h4 class="text-sm font-bold text-white">🔑 Generated Keys List</h4>
+                        <div id="ownerKeysListContainer" class="space-y-2 max-h-48 overflow-y-auto pr-2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE SELECCIÓN DE PAGO CON LOGOS PROFESIONALES -->
+    <div id="checkoutModalOverlay" class="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-2xl space-y-6">
+            <div class="flex items-center justify-between border-b border-brand-border pb-4">
+                <h3 class="text-lg font-bold text-white">Secure Checkout</h3>
+                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">✕</button>
+            </div>
+            <div class="text-center text-xs text-slate-400">
+                Acquiring: <strong id="checkoutSelectedPlanName" class="text-purple-400">Pro Plan</strong>
+            </div>
+
+            <div class="space-y-3.5">
+                <!-- BOTÓN STRIPE -->
+                <button onclick="redirectToStripe()" class="w-full py-4 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 text-white shadow-lg transition-all cursor-pointer flex items-center justify-between">
+                    <span class="flex items-center gap-2">💳 Stripe (Cards, Apple Pay, Cash App)</span>
+                    <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded font-mono">Instant ⚡</span>
+                </button>
+
+                <div class="text-center text-[10px] text-slate-500 uppercase font-bold">- OR PAY WITH -</div>
+
+                <!-- CONTENEDOR DE PAYPAL -->
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-2">
+                    <div class="text-[11px] font-bold text-blue-400 flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.067 8.547c.219-1.425-.668-2.22-2.15-2.22h-5.21c-.42 0-.782.304-.848.72l-1.077 6.842c-.044.279.172.525.454.525h2.51c.42 0 .782-.304.848-.72l.462-2.936h1.22c3.036 0 4.841-1.468 5.341-2.209zm-2.82-1.378c.552.415.762 1.115.545 1.954-.23 1.002-1.127 1.488-2.616 1.488h-.944l.582-3.692h.96c.645 0 1.258.07 1.473.25zm-6.275 6.012l1.32-8.38c.066-.416.428-.72.848-.72h4.945c1.621 0 2.766.425 3.197 1.512.441 1.12.083 2.455-.986 3.296-1.189.943-3.155 1.294-5.32 1.294h-1.57l-.547 3.475c-.044.279.172.525.454.525h2.09c.42 0 .782-.304.848-.72l.334-2.122h1.41c2.474 0 4.148-1.056 4.621-2.486.26-.787.218-1.51-.122-2.13-.578-1.05-1.921-1.523-4.145-1.523h-3.818c-.42 0-.782.304-.848.72l-1.433 9.102c-.044.279.172.525.454.525h2.246c.42 0 .782-.304.848-.72l.533-3.385z"/></svg>
+                        PayPal Secure Checkout
+                    </div>
+                    <div id="paypal-button-container" class="w-full"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AUTENTICACIÓN (LOGIN & REGISTER) -->
+    <div id="authModalOverlay" class="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-2xl space-y-6">
+            <div class="flex items-center justify-between border-b border-brand-border pb-4">
+                <h3 id="authModalTitle" class="text-lg font-bold text-white">Portal Access</h3>
+                <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">✕</button>
+            </div>
+            
+            <!-- PESTAÑAS LOGIN / REGISTER -->
+            <div class="flex bg-slate-900 p-1 rounded-xl gap-1">
+                <button id="authTabSignInBtn" onclick="switchAuthMode('signin')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer bg-purple-600 text-white shadow-md">Sign In (Login)</button>
+                <button id="authTabRegisterBtn" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-slate-400 hover:text-white">Register</button>
+            </div>
+
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Username</label>
+                    <input id="authUsernameInput" type="text" required placeholder="Your username" class="mt-1 w-full bg-slate-900 border border-brand-border rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Password</label>
+                        <span id="pwdStrengthText" class="text-[10px] font-bold text-slate-400"></span>
+                    </div>
+                    <input id="authPasswordInput" type="password" oninput="checkPasswordStrength(this.value)" required placeholder="••••••••" class="mt-1 w-full bg-slate-900 border border-brand-border rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-purple-500">
+                    <div class="mt-2 w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                        <div id="pwdStrengthBar" class="h-full w-0 transition-all duration-300 bg-red-500"></div>
+                    </div>
+                </div>
+                <button id="btnAuthSubmitForm" type="submit" class="w-full py-3 rounded-xl font-extrabold text-xs bg-purple-600 hover:bg-purple-500 text-white cursor-pointer shadow-lg">Authorize Access</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR CONTRASEÑA (ADMIN) -->
+    <div id="editPasswordModalOverlay" class="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-card border border-amber-500/40 rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold text-amber-400">👑 Change User Password</h3>
+            <input type="hidden" id="editPasswordUsername">
+            <div>
+                <label class="text-xs font-bold text-slate-400 uppercase">New Password for <span id="targetUserSpan" class="text-white"></span></label>
+                <input id="newUserPasswordInput" type="text" required placeholder="New password" class="mt-1 w-full bg-slate-900 border border-brand-border rounded-xl px-4 py-3 text-xs text-white outline-none">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="saveNewUserPassword()" class="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs cursor-pointer">Update Password</button>
+                <button onclick="closeEditPasswordModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const store = {
+            get: (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e) { return d; } },
+            set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+        };
+
+        let currentWebUser = null;
+        let authMode = 'signin';
+        let activeStripeUrl = '';
+        let activePlanPrice = 7.99;
+        let activePlanName = 'Essential';
+        let currentLang = 'en';
+
+        const translations = {
+            en: {
+                nav_home: "Home",
+                nav_users: "Live Users",
+                nav_plans: "Plans & Tweaks",
+                nav_feedback: "Feedbacks & Chat",
+                btn_signin: "Sign In / Register",
+                badge_title: "NonTweaks Suite v18.4 - Scaled FPS Tweaks, Custom OS & Professional Secure Checkout",
+                hero_title: "Scaled FPS Tweaks, Custom OS & Pro Esports Support",
+                hero_desc: "Over 15+ escalated FPS & delay tweaks per tier, NVIDIA/AMD GPU debloat, Custom OS profiles and competitive game tuning.",
+                tab_plans: "💎 Scaled Plans & Tweaks",
+                tab_users: "👥 Live Users",
+                tab_feedback: "💬 Feedbacks & Chat",
+                tab_inbox: "📥 Inbox",
+                tab_hwid: "🔑 HWID License (1 PC)",
+                status_label: "Current Account Status",
+                status_desc: "Sign in and activate a plan to unlock escalated FPS & delay tweaks, NVIDIA/AMD debloat and Custom OS.",
+                free_version: "Free Version",
+                plans_heading: "Scaled Performance Plans (+15 Tweaks per Tier)"
+            },
+            es: {
+                nav_home: "Inicio",
+                nav_users: "Usuarios en Vivo",
+                nav_plans: "Planes & Tweaks",
+                nav_feedback: "Feedbacks & Chat",
+                btn_signin: "Iniciar Sesión / Registro",
+                badge_title: "NonTweaks Suite v18.4 - Tweaks de FPS Escalados, Custom OS y Compra Segura",
+                hero_title: "Tweaks de FPS Escalados, Custom OS y Soporte Pro Esports",
+                hero_desc: "Más de 15+ tweaks avanzados de FPS y delay por nivel, debloat NVIDIA/AMD, Custom OS y optimización competitiva.",
+                tab_plans: "💎 Planes & Tweaks Escalados",
+                tab_users: "👥 Usuarios en Vivo",
+                tab_feedback: "💬 Feedbacks & Chat",
+                tab_inbox: "📥 Bandeja",
+                tab_hwid: "🔑 Licencia HWID (1 PC)",
+                status_label: "Estado Actual de Cuenta",
+                status_desc: "Inicia sesión y activa un plan para desbloquear tweaks avanzados de FPS, debloat y Custom OS.",
+                free_version: "Versión Gratuita",
+                plans_heading: "Planes de Rendimiento Escalado (+15 Tweaks por Nivel)"
+            }
+        };
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('langSelect').value = lang;
+            document.getElementById('langSelectMobile').value = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toastNotification');
+            const msgEl = document.getElementById('toastMessage');
+            if(!toast || !msgEl) return;
+            msgEl.innerText = message;
+            toast.className = `fixed bottom-6 right-6 z-[999999] px-5 py-3.5 rounded-2xl font-bold text-xs shadow-2xl flex items-center gap-3 transition-all duration-300 bg-${type === 'error' ? 'red' : type === 'success' ? 'emerald' : 'purple'}-600 text-white`;
+            setTimeout(() => toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none'), 3500);
+        }
+
+        function logSecurityEvent(text) {
+            let logs = store.get('nontweaks_security_logs', []);
+            logs.unshift(`[${new Date().toLocaleTimeString()}] ${text}`);
+            if(logs.length > 30) logs.pop();
+            store.set('nontweaks_security_logs', logs);
+        }
+
+        function initCountdown() {
+            let timerEl = document.getElementById('countdownTimer');
+            if(!timerEl) return;
+            let time = store.get('nontweaks_countdown_sec', 86400);
+            
+            setInterval(() => {
+                if(time > 0) time--;
+                else time = 86400;
+                store.set('nontweaks_countdown_sec', time);
+
+                let h = Math.floor(time / 3600);
+                let m = Math.floor((time % 3600) / 60);
+                let s = time % 60;
+                timerEl.innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            }, 1000);
+        }
+
+        const humanNamesPool = ["Alex_Viper", "Gabriel_X", "Zack_FPS", "LucasPro", "Mateo_Strix", "Valeria_Gamer", "Sofia_R6", "Liam_Vortex", "Ethan_Apex", "Noah_Hz"];
+        const humanActionsPool = ["registered an account (No plan purchased)", "signed in as Free Guest", "browsing platform profiles"];
+
+        function initLiveRegistrations() {
+            let liveList = store.get('nontweaks_live_regs', [
+                { user: "Valkyrie_Queen", action: "registered an account (No plan purchased)", time: "Just now", ip: "186.x.x.42" }
+            ]);
+            renderLiveRegistrations(liveList);
+
+            setInterval(() => {
+                const randomName = humanNamesPool[Math.floor(Math.random() * humanNamesPool.length)];
+                const randomAction = humanActionsPool[Math.floor(Math.random() * humanActionsPool.length)];
+                liveList.unshift({ user: randomName, action: randomAction, time: "Just now", ip: "190.x.x." + Math.floor(Math.random() * 200) });
+                if(liveList.length > 12) liveList.pop();
+                store.set('nontweaks_live_regs', liveList);
+                renderLiveRegistrations(liveList);
+            }, 20000);
+        }
+
+        function renderLiveRegistrations(list) {
+            const container = document.getElementById('liveRegistrationsList');
+            if(!container) return;
+            container.innerHTML = list.map(item => `
+                <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">👤</div>
+                        <div>
+                            <div class="font-bold text-white">${item.user} <span class="text-[10px] font-normal text-slate-400">(${item.ip})</span></div>
+                            <div class="text-slate-400 text-[11px]">User <strong class="text-blue-300">${item.user}</strong> ${item.action}.</div>
+                        </div>
+                    </div>
+                    <div class="text-[11px] font-semibold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 whitespace-nowrap">
+                        ⏳ ${item.time}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        const defaultFeedbacks = [
+            { username: "Valkyrie_Queen", plan: "Ultra 🔥", rating: 5, comment: "The escalated +40 tweaks and NVIDIA debloat gave me absolute zero stutters!" }
+        ];
+
+        const defaultChatMessages = [
+            { user: "System", text: "Welcome to NonTweaks Community Chat! Share your scaled FPS gains here.", time: "12:00" },
+            { user: "Zack_FPS", text: "The Ultra tier with Custom OS is a massive upgrade for competitive gaming.", time: "12:05" }
+        ];
+
+        function initApp() {
+            const remembered = localStorage.getItem('nontweaks_remembered_user');
+            if(remembered) {
+                const users = store.get('nontweaks_users_db', []);
+                const u = users.find(x => x.username && x.username.toLowerCase() === remembered.toLowerCase());
+                if(u && !u.banned) currentWebUser = u;
+            }
+            if(store.get('nontweaks_feedbacks_db', []).length === 0) store.set('nontweaks_feedbacks_db', defaultFeedbacks);
+            if(store.get('nontweaks_chat_db', []).length === 0) store.set('nontweaks_chat_db', defaultChatMessages);
+
+            updateUserUI();
+            renderFeedbacks();
+            renderChatMessages();
+            renderInboxMessages();
+            initLiveRegistrations();
+            initCountdown();
+            logSecurityEvent("System initialized successfully.");
+        }
+
+        function switchWebTab(tabName) {
+            ['planes', 'nuevos-usuarios', 'feedback', 'inbox', 'activar', 'licencia', 'owner'].forEach(t => {
+                const sec = document.getElementById('webSec-' + t);
+                const btn = document.getElementById('webTabBtn-' + t);
+                if(sec) sec.classList.add('hidden');
+                if(btn) { btn.classList.remove('bg-purple-600', 'text-white'); btn.classList.add('bg-slate-800/60', 'text-slate-300'); }
+            });
+            const activeSec = document.getElementById('webSec-' + tabName);
+            const activeBtn = document.getElementById('webTabBtn-' + tabName);
+            if(activeSec) activeSec.classList.remove('hidden');
+            if(activeBtn) { activeBtn.classList.remove('bg-slate-800/60', 'text-slate-300'); activeBtn.classList.add('bg-purple-600', 'text-white'); }
+            if(tabName === 'feedback') { renderFeedbacks(); renderChatMessages(); }
+            if(tabName === 'owner') renderOwnerPanel();
+        }
+
+        function openAuthModal() { document.getElementById('authModalOverlay').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('authModalOverlay').classList.add('hidden'); }
+        function toggleMobileMenu() { const m = document.getElementById('mobileMenuDropdown'); if(m) m.classList.toggle('hidden'); }
+
+        function switchAuthMode(mode) {
+            authMode = mode;
+            const title = document.getElementById('authModalTitle');
+            const submitBtn = document.getElementById('btnAuthSubmitForm');
+            const signInBtn = document.getElementById('authTabSignInBtn');
+            const registerBtn = document.getElementById('authTabRegisterBtn');
+
+            if(mode === 'signin') {
+                title.innerText = "Sign In (Login)";
+                submitBtn.innerText = "Authorize Access";
+                signInBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer bg-purple-600 text-white shadow-md";
+                registerBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-slate-400 hover:text-white";
+            } else {
+                title.innerText = "Account Registration";
+                submitBtn.innerText = "Create Account";
+                registerBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer bg-purple-600 text-white shadow-md";
+                signInBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-slate-400 hover:text-white";
+            }
+        }
+
+        function checkPasswordStrength(password) {
+            const bar = document.getElementById('pwdStrengthBar');
+            const text = document.getElementById('pwdStrengthText');
+            if(!bar || !text) return;
+            if(!password) { bar.style.width = '0%'; text.innerText = ''; return; }
+
+            let score = 0;
+            if (password.length >= 6) score++;
+            if (password.length >= 10) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+
+            if(score <= 2) {
+                bar.style.width = '33%'; bar.className = 'h-full bg-red-500'; text.innerText = 'Weak ⚠️'; text.className = 'text-[10px] font-bold text-red-400';
+            } else if(score <= 4) {
+                bar.style.width = '66%'; bar.className = 'h-full bg-amber-500'; text.innerText = 'Medium 🟡'; text.className = 'text-[10px] font-bold text-amber-400';
+            } else {
+                bar.style.width = '100%'; bar.className = 'h-full bg-emerald-500'; text.innerText = 'Strong! 💪'; text.className = 'text-[10px] font-bold text-emerald-400';
+            }
+        }
+
+        function openCheckoutModal(planName, price, stripeUrl) {
+            if(!currentWebUser) { showToast("Sign in to purchase licenses.", "error"); openAuthModal(); return; }
+            activePlanName = planName;
+            activePlanPrice = price;
+            activeStripeUrl = stripeUrl;
+            
+            document.getElementById('checkoutSelectedPlanName').innerText = planName + " Plan ($" + price + ")";
+            document.getElementById('checkoutModalOverlay').classList.remove('hidden');
+
+            const ppContainer = document.getElementById('paypal-button-container');
+            ppContainer.innerHTML = '';
+            if(window.paypal) {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        return actions.order.create({ purchase_units: [{ amount: { value: price.toString() } }] });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            completeSuccessfulPayment(planName, "PayPal");
+                        });
+                    }
+                }).render('#paypal-button-container');
+            }
+        }
+
+        function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').classList.add('hidden'); }
+        function redirectToStripe() {
+            logSecurityEvent(`User ${currentWebUser ? currentWebUser.username : 'Guest'} redirected to Stripe Checkout for ${activePlanName}.`);
+            window.location.href = activeStripeUrl;
+        }
+
+        function completeSuccessfulPayment(planName, gateway) {
+            closeCheckoutModal();
+            const secureCode = 'NON-' + planName.toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            let keys = store.get('nontweaks_keys_db', []);
+            keys.push({ key: secureCode, plan: planName + " Plan", owner: currentWebUser.username, hwid: currentWebUser.hwid, status: "Redeemed" });
+            store.set('nontweaks_keys_db', keys);
+
+            logSecurityEvent(`Payment verified via ${gateway} for user ${currentWebUser.username}. Key generated: ${secureCode}`);
+
+            let msgs = store.get('nontweaks_msgs_db', {});
+            if(!msgs[currentWebUser.username]) msgs[currentWebUser.username] = [];
+            msgs[currentWebUser.username].unshift({
+                title: `🎉 Secure Purchase Verified: ${planName} Plan 🎉`,
+                body: `Payment captured successfully via ${gateway}.\n\nPlan: **${planName}**\nLicense Key: ${secureCode}\nHWID Lock: ${currentWebUser.hwid}\n\nClick below to activate instantly!`,
+                key: secureCode,
+                plan: planName,
+                date: new Date().toLocaleTimeString()
+            });
+            store.set('nontweaks_msgs_db', msgs);
+
+            currentWebUser.plan = planName;
+            let users = store.get('nontweaks_users_db', []);
+            let u = users.find(x => x.username === currentWebUser.username);
+            if(u) { u.plan = planName; store.set('nontweaks_users_db', users); }
+
+            updateUserUI(); renderInboxMessages(); switchWebTab('inbox');
+            showToast(`Purchase verified! Key sent to Inbox. 🚀`, "success");
+            if(window.confetti) confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const u = document.getElementById('authUsernameInput').value.trim();
+            const p = document.getElementById('authPasswordInput').value.trim();
+            if(!u || !p) return;
+            
+            let users = store.get('nontweaks_users_db', []);
+            let found = users.find(x => x.username.toLowerCase() === u.toLowerCase());
+
+            if(authMode === 'register') {
+                if(found) { showToast("User already exists.", "error"); return; }
+                const isOwner = (u.toLowerCase() === 'jadi' && p === 'Fernanfloo1989');
+                found = { 
+                    username: u, pass: p, role: isOwner ? 'owner' : 'client', 
+                    plan: isOwner ? 'Ultra' : 'Free', 
+                    hwid: 'HWID-' + Math.random().toString(36).substring(2,8).toUpperCase(), 
+                    banned: false 
+                };
+                users.push(found);
+                store.set('nontweaks_users_db', users);
+            } else {
+                if(!found) {
+                    const isOwner = (u.toLowerCase() === 'jadi' && p === 'Fernanfloo1989');
+                    if(isOwner) {
+                        found = { username: 'Jadi', pass: 'Fernanfloo1989', role: 'owner', plan: 'Ultra', hwid: 'HWID-OWNER', banned: false };
+                        users.push(found); store.set('nontweaks_users_db', users);
+                    } else {
+                        showToast("User not found. Please register.", "error"); return;
+                    }
+                }
+                if(found.pass !== p && !(u.toLowerCase() === 'jadi' && p === 'Fernanfloo1989')) {
+                    showToast("Incorrect password.", "error"); return;
+                }
+                if(found.banned) { showToast("Account suspended.", "error"); return; }
+            }
+
+            currentWebUser = found;
+            localStorage.setItem('nontweaks_remembered_user', u);
+            closeAuthModal();
+            updateUserUI();
+
+            const banner = document.getElementById('welcomeBanner');
+            if(banner) {
+                document.getElementById('welcomeBannerTitle').innerText = `Welcome, ${u}! 🎉`;
+                banner.classList.remove('hidden');
+            }
+
+            logSecurityEvent(`User ${u} signed in/registered successfully.`);
+            showToast("Welcome back, " + u + "! 🎉", "success");
+        }
+
+        function updateUserUI() {
+            const btnUser = document.getElementById('btnWebUserPortal');
+            const btnOwner = document.getElementById('btnWebOwnerConsole');
+            const ownerTabBtn = document.getElementById('webTabBtn-owner');
+            const planBadge = document.getElementById('activePlanBadgeUI');
+            const statusTitle = document.getElementById('currentDashboardStatusTitle');
+            const statusBadge = document.getElementById('currentDashboardBadge');
+
+            const plan = currentWebUser ? currentWebUser.plan : 'Free';
+            if(planBadge) planBadge.innerText = `(${plan})`;
+
+            if(currentWebUser && currentWebUser.plan && currentWebUser.plan !== 'Free') {
+                if(statusTitle) statusTitle.innerText = `Status: Plan ${currentWebUser.plan} Active 🚀`;
+                if(statusBadge) {
+                    statusBadge.innerText = `${currentWebUser.plan} Enabled`;
+                    statusBadge.className = 'px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 text-xs font-black border border-emerald-500/30 whitespace-nowrap';
+                }
+            } else {
+                if(statusTitle) statusTitle.innerText = `Status: Free Guest (No Active Plan)`;
+                if(statusBadge) {
+                    statusBadge.innerText = `Free Version`;
+                    statusBadge.className = 'px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-black border border-slate-700 whitespace-nowrap';
+                }
+            }
+
+            if(!currentWebUser) {
+                if(btnUser) { btnUser.innerText = "Sign In / Register"; btnUser.onclick = openAuthModal; }
+                if(btnOwner) btnOwner.classList.add('hidden');
+                if(ownerTabBtn) ownerTabBtn.classList.add('hidden');
+            } else {
+                if(btnUser) { btnUser.innerText = "👤 " + currentWebUser.username + " (Sign Out)"; btnUser.onclick = () => { logSecurityEvent(`User ${currentWebUser.username} signed out.`); currentWebUser = null; localStorage.removeItem('nontweaks_remembered_user'); updateUserUI(); switchWebTab('planes'); showToast("Signed out"); }; }
+                if(currentWebUser.role === 'owner' || currentWebUser.username.toLowerCase() === 'jadi') {
+                    if(btnOwner) btnOwner.classList.remove('hidden');
+                    if(ownerTabBtn) ownerTabBtn.classList.remove('hidden');
+                }
+            }
+        }
+
+        function renderFeedbacks() {
+            const container = document.getElementById('webFeedbacksGrid');
+            if(!container) return;
+            let fbs = store.get('nontweaks_feedbacks_db', defaultFeedbacks);
+            container.innerHTML = fbs.map((f, idx) => `
+                <div class="p-5 rounded-2xl bg-brand-card border border-brand-border space-y-3 shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <span class="font-extrabold text-sm text-white">👤 ${f.username}</span>
+                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300">${f.plan}</span>
+                    </div>
+                    <div class="text-xs text-amber-400 font-bold">${'⭐'.repeat(Number(f.rating) || 5)}</div>
+                    <p class="text-xs text-slate-300 italic">"${f.comment}"</p>
+                </div>
+            `).join('');
+        }
+
+        function handleFeedbackSubmit(e) {
+            e.preventDefault();
+            if(!currentWebUser) { openAuthModal(); return; }
+            let fbs = store.get('nontweaks_feedbacks_db', defaultFeedbacks);
+            fbs.unshift({
+                username: currentWebUser.username,
+                plan: currentWebUser.plan + " Plan",
+                rating: document.getElementById('feedbackRatingInput').value,
+                comment: document.getElementById('feedbackCommentInput').value.trim()
+            });
+            store.set('nontweaks_feedbacks_db', fbs);
+            document.getElementById('feedbackCommentInput').value = '';
+            renderFeedbacks();
+            showToast("Feedback submitted successfully! 🎊", "success");
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessagesContainer');
+            if(!container) return;
+            let chat = store.get('nontweaks_chat_db', defaultChatMessages);
+            container.innerHTML = chat.map(c => `
+                <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 text-xs space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span class="font-extrabold text-purple-400">👤 ${c.user}</span>
+                        <span class="text-[10px] text-slate-500">${c.time}</span>
+                    </div>
+                    <p class="text-slate-200">${c.text}</p>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            if(!currentWebUser) { showToast("Sign in to write in chat.", "error"); openAuthModal(); return; }
+            const input = document.getElementById('chatInputMessage');
+            const txt = input.value.trim();
+            if(!txt) return;
+
+            let chat = store.get('nontweaks_chat_db', defaultChatMessages);
+            chat.push({
+                user: currentWebUser.username,
+                text: txt,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+            if(chat.length > 50) chat.shift();
+            store.set('nontweaks_chat_db', chat);
+            input.value = '';
+            renderChatMessages();
+        }
+
+        function renderInboxMessages() {
+            const container = document.getElementById('webInboxList');
+            const badge = document.getElementById('webMsgCountBadge');
+            if(!container || !currentWebUser) return;
+            let msgs = store.get('nontweaks_msgs_db', {})[currentWebUser.username] || [];
+            if(badge) { if(msgs.length > 0) { badge.innerText = msgs.length; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); } }
+            container.innerHTML = msgs.length ? msgs.map(m => `
+                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                    <div class="flex justify-between text-xs"><span class="font-bold text-white">${m.title}</span><span class="text-slate-500">${m.date}</span></div>
+                    <p class="text-xs text-slate-300 whitespace-pre-line">${m.body}</p>
+                    ${m.key ? `<button onclick="quickRedeem('${m.key}', '${m.plan}')" class="mt-2 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold cursor-pointer shadow-md">⚡ Activate ${m.plan} Now</button>` : ''}
+                </div>
+            `).join('') : `<div class="text-center py-8 text-slate-500">No messages in inbox.</div>`;
+        }
+
+        function quickRedeem(keyStr, planName) {
+            if(!currentWebUser) { openAuthModal(); return; }
+            currentWebUser.plan = planName;
+            let users = store.get('nontweaks_users_db', []);
+            let u = users.find(x => x.username === currentWebUser.username);
+            if(u) { u.plan = planName; store.set('nontweaks_users_db', users); }
+
+            updateUserUI(); switchWebTab('licencia');
+            showToast(`Key ${keyStr} activated successfully for ${planName}! 🎉`, "success");
+            if(window.confetti) confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        }
+
+        function redeemManualKey() {
+            if(!currentWebUser) { showToast("Sign in first.", "error"); openAuthModal(); return; }
+            const inputVal = document.getElementById('manualKeyInput').value.trim().toUpperCase();
+            if(!inputVal) { showToast("Enter a valid key.", "error"); return; }
+
+            let keys = store.get('nontweaks_keys_db', []);
+            let foundKey = keys.find(k => k.key.toUpperCase() === inputVal);
+
+            if(foundKey) {
+                let targetPlan = "Pro";
+                if(foundKey.plan.includes("Essential")) targetPlan = "Essential";
+                if(foundKey.plan.includes("Ultra")) targetPlan = "Ultra";
+
+                currentWebUser.plan = targetPlan;
+                let users = store.get('nontweaks_users_db', []);
+                let u = users.find(x => x.username === currentWebUser.username);
+                if(u) { u.plan = targetPlan; store.set('nontweaks_users_db', users); }
+
+                updateUserUI(); switchWebTab('licencia');
+                showToast(`License activated successfully: ${targetPlan} Plan! 🚀`, "success");
+                if(window.confetti) confetti({ particleCount: 140, spread: 90, origin: { y: 0.6 } });
+            } else {
+                showToast("Invalid or already expired license key.", "error");
+            }
+        }
+
+        function renderOwnerPanel() {
+            let users = store.get('nontweaks_users_db', []);
+            let keys = store.get('nontweaks_keys_db', []);
+            let logs = store.get('nontweaks_security_logs', []);
+
+            document.getElementById('ownerTotalUsers').innerText = users.length;
+            document.getElementById('ownerTotalKeys').innerText = keys.length;
+            document.getElementById('ownerBlockedBypasses').innerText = store.get('nontweaks_blocked_count', 0);
+
+            const logsContainer = document.getElementById('ownerSecurityLogsContainer');
+            logsContainer.innerHTML = logs.map(l => `<div>${l}</div>`).join('') || '<div class="text-slate-500">No logs recorded.</div>';
+
+            const keysContainer = document.getElementById('ownerKeysListContainer');
+            keysContainer.innerHTML = keys.map((k, idx) => `
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-mono text-purple-400 font-bold">${k.key} <span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">${k.plan}</span></div>
+                        <div class="text-[10px] text-slate-400">Owner: ${k.owner} | Status: ${k.status}</div>
+                    </div>
+                    <button onclick="ownerRevokeKey(${idx})" class="px-2.5 py-1 bg-red-600/20 text-red-400 border border-red-500/30 rounded-lg text-[10px] font-bold cursor-pointer">Revoke Key</button>
+                </div>
+            `).join('') || '<div class="text-xs text-slate-500">No keys generated.</div>';
+
+            const usersContainer = document.getElementById('ownerUsersListContainer');
+            usersContainer.innerHTML = users.map((usr, idx) => `
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
+                    <div>
+                        <div class="font-bold text-white">${usr.username} <span class="text-purple-300 font-normal">(${usr.plan})</span> - Pass: <span class="font-mono text-amber-400">${usr.pass}</span></div>
+                        <div class="font-mono text-[10px] text-slate-400">${usr.hwid}</div>
+                    </div>
+                    <div class="flex gap-1.5">
+                        <button onclick="openEditPasswordModal('${usr.username}')" class="px-2 py-1 bg-amber-600/20 text-amber-400 border border-amber-500/30 rounded-lg text-[10px] font-bold cursor-pointer">Change Pass</button>
+                        <button onclick="ownerToggleBanUser('${usr.username}')" class="px-2 py-1 ${usr.banned ? 'bg-emerald-600/20 text-emerald-400' : 'bg-red-600/20 text-red-400'} border rounded-lg text-[10px] font-bold cursor-pointer">${usr.banned ? 'Unban' : 'Ban'}</button>
+                    </div>
+                </div>
+            `).join('') || '<div class="text-xs text-slate-500">No users registered.</div>';
+        }
+
+        function ownerGenerateSpecificKey() {
+            const selectedPlan = document.getElementById('ownerTargetPlanSelect').value;
+            let keys = store.get('nontweaks_keys_db', []);
+            const newKeyStr = 'NON-' + selectedPlan.toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            keys.push({ key: newKeyStr, plan: selectedPlan + " Plan", owner: currentWebUser ? currentWebUser.username : 'Owner', hwid: 'Unassigned', status: 'Available' });
+            store.set('nontweaks_keys_db', keys);
+            logSecurityEvent(`Owner generated manual key for ${selectedPlan}: ${newKeyStr}`);
+            renderOwnerPanel();
+            showToast(`Key generated: ${newKeyStr}`, "success");
+        }
+
+        function ownerRevokeKey(idx) {
+            let keys = store.get('nontweaks_keys_db', []);
+            logSecurityEvent(`Owner revoked key: ${keys[idx] ? keys[idx].key : 'Unknown'}`);
+            keys.splice(idx, 1);
+            store.set('nontweaks_keys_db', keys);
+            renderOwnerPanel();
+            showToast("Key revoked successfully", "info");
+        }
+
+        function ownerToggleBanUser(username) {
+            let users = store.get('nontweaks_users_db', []);
+            let u = users.find(x => x.username === username);
+            if(u) {
+                u.banned = !u.banned;
+                store.set('nontweaks_users_db', users);
+                logSecurityEvent(`Owner toggled ban status for user ${username} to ${u.banned}`);
+                renderOwnerPanel();
+                showToast(`User ${username} status updated`, "info");
+            }
+        }
+
+        function openEditPasswordModal(username) {
+            document.getElementById('editPasswordUsername').value = username;
+            document.getElementById('targetUserSpan').innerText = username;
+            document.getElementById('newUserPasswordInput').value = '';
+            document.getElementById('editPasswordModalOverlay').classList.remove('hidden');
+        }
+
+        function closeEditPasswordModal() {
+            document.getElementById('editPasswordModalOverlay').classList.add('hidden');
+        }
+
+        function saveNewUserPassword() {
+            const uname = document.getElementById('editPasswordUsername').value;
+            const newPass = document.getElementById('newUserPasswordInput').value.trim();
+            if(!newPass) { showToast("Enter a valid password", "error"); return; }
+
+            let users = store.get('nontweaks_users_db', []);
+            let u = users.find(x => x.username === uname);
+            if(u) {
+                u.pass = newPass;
+                store.set('nontweaks_users_db', users);
+                logSecurityEvent(`Owner changed password for user ${uname}`);
+                closeEditPasswordModal();
+                renderOwnerPanel();
+                showToast(`Password updated for ${uname}`, "success");
+            }
+        }
+
+        function ownerClearLogs() {
+            store.set('nontweaks_security_logs', ['[INFO] Logs cleared by Owner.']);
+            renderOwnerPanel();
+            showToast("Logs cleared", "success");
+        }
+
+        window.onload = function() { initApp(); };
+    </script>
+</body>
+</html>
